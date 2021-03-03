@@ -38,13 +38,20 @@ class HomeController extends AbstractController
      */
     public function edit(Produit $produit, EntityManagerInterface $em, Request $request): Response
     {
+        // Créer le formulaire
         $form = $this->createForm(ProduitFormType::class, $produit);
         $form->handleRequest($request);
+        // Validation formulaire soumis
         if ($form->isSubmitted() && $form->isValid() ) {
+            // Enregistrer les modifications dans la bdd
             $em->flush();
+            // Rajouter un message flash
             $this->addFlash('success','Le produit a été modifié');
+            // Rediriger vers la page de produits
             return $this->redirectToRoute('liste_produits');
         }
+
+        // Envoyer le formulaire à la vue
         return $this->render('home/edit.html.twig', [
             'produitForm' => $form->createView()
         ]);

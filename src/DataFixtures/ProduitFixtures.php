@@ -11,6 +11,7 @@ class ProduitFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        // Configurer faker
         $faker = Factory::create('fr_FR');
 
         // Créer 20 produits
@@ -22,6 +23,7 @@ class ProduitFixtures extends Fixture
                 ->setDescription($faker->realText(200))
                 ->setPrice($faker->numberBetween(0,100))
             ;
+            // persister le produit
             $manager->persist($produit);
         }
         // Un seul flush pour minimiser les requêtes SQL
