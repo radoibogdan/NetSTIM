@@ -1,0 +1,79 @@
+
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {#################       NAVBAR      #################}
+    {# sera affiché sur toutes les pages #}
+
+    <nav class="navbar is-light is-fixed-top">
+        <div class="container is-widescreen">
+            <div class="p navbar-brand mx-0">
+                <a class="navbar-item px-5" href="{{ path('liste_produits') }}">
+                    <p class="subtitle is-4 has-text-primary">
+                        <b>NetSTIM</b>
+                    </p>
+                </a>
+
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                    <div class="navbar-item pt-0 pb-1">
+                        <a class="navbar-item button is-light" href="{{ path('liste_produits') }}">
+                            <span>Liste produits</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {# Les messages flash #}
+    <div class="container is-fullhd">
+        {% include 'includes/flashes.html.twig' %}
+    </div>
+
+    {% block content %}
+        {# Block qui contiendra le contenu de chaque page #}
+    {% endblock %}
+
+    <footer class="footer has-background-info-dark">
+        <div class="container is-fullhd">
+
+            {# TO DO FOOTER #}
+
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Get all "navbar-burger" elements
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+            // Check if there are any navbar burgers
+            if ($navbarBurgers.length > 0) {
+
+                // Add a click event on each of them
+                $navbarBurgers.forEach( el => {
+                    el.addEventListener('click', () => {
+                        // Get the value of the attr data-target="navbarBasicExample" from the burger div which is navbarBasicExample
+                        const target = el.dataset.target;
+                        // Using the targe variable(navbarBasicExample), we get the div with the id "navbarBasicExample"
+                        const $target = document.getElementById(target);
+                        // on both the "navbar-burger" and the "navbar-menu"
+                        el.classList.toggle('is-active'); // Toggle the "is-active" class on the burger div
+                        $target.classList.toggle('is-active'); // Toggle the "is-active" class on the div with the id "navbarBasicExample"
+
+                    });
+                });
+            }
+
+        });
+    </script>
+{% endblock %}

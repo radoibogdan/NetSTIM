@@ -1,0 +1,40 @@
+{% extends '_template.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+
+    <div class="section">
+
+        <h1 class="title">Liste des produits</h1>
+
+        {% include 'includes/flashes.html.twig' %}
+
+        <table class="table is-fullwidth is-hoverable liste-produits-admin">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Résumé</th>
+                <th class="has-text-centered">Prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {# La boucle sur liste_produits #}
+            {% for produit in liste_produits %}
+                <tr>
+                    <td class="pr-1 has-text-centered">{{ produit.id }}</td>
+                    <td>
+                        <a href="{{ path('modifier_produit', {id:produit.id}) }}">
+                            {{ produit.name }}
+                        </a>
+                    </td>
+                    <td>{{ produit.shortdescription }} </td>
+                        <td class="has-text-centered">{{ produit.price | number_format(2, '.', ' ') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

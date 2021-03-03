@@ -1,0 +1,32 @@
+{% extends '_template.html.twig' %}
+
+{% block title %}Modifier le produit {% endblock %}
+
+{% block content %}
+    <div class="section">
+        <h1 class="title has-text-centered">Modifier le produit</h1>
+        <div class="columns">
+            <div class="column"></div>
+            <div class="column is-half">
+                {{ form_start(produitForm) }}
+                    {{ form_row(produitForm.name,{
+                        label : 'Nom produit'
+                    }) }}
+                    {{ form_row(produitForm.short_description,{
+                        label : 'Résumé'
+                    }) }}
+                    {{ form_row(produitForm.description, {
+                        label : 'Description détaillée'
+                    }) }}
+                    {{ form_row(produitForm.price, {
+                        label : 'Prix'
+                    }) }}
+                    <button type="submit" class="button is-success is-fullwidth">
+                        Enregistrer
+                    </button>
+                {{ form_end(produitForm) }}
+            </div>
+            <div class="column"></div>
+        </div>
+    </div>
+{% endblock %}
