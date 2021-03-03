@@ -8,13 +8,12 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <title>{% block title %}Accueil{% endblock %}</title>
-
         {# Le css #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
-
     </head>
+
     <body class="has-background-info-light">
         {% block body %}
             {# contenu page #}
@@ -25,4 +24,5 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
+
 </html>
