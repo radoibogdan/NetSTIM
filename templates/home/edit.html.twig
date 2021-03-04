@@ -8,6 +8,7 @@
         <div class="columns">
             <div class="column"></div>
             <div class="column is-half">
+                {# Afficher le formulaire #}
                 {{ form_start(produitForm) }}
                     {{ form_row(produitForm.name,{
                         label : 'Nom produit'
@@ -24,9 +25,54 @@
                     <button type="submit" class="button is-success is-fullwidth">
                         Enregistrer
                     </button>
+                    <a href="{{ path('modifier_produit_ajax', {id : produit.id}) }}" class="mt-2 button is-success is-fullwidth js-enregistrer">
+                        Enregistrer avec Ajax
+                    </a>
                 {{ form_end(produitForm) }}
             </div>
             <div class="column"></div>
         </div>
     </div>
+{% endblock %}
+
+{# Surchager le block js #}
+{% block js %}
+
+    {# Charger Axios #}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        // Editer le produit
+        function onClickEditProduit(event) {
+            // désactiver la fonction par défaut (redirection) du lien "a"
+            event.preventDefault();
+            // récupérer l'url pour l'appeler nous même via ajax
+            const href = this.href;
+            console.log(href);
+            const name = document.querySelector('#produit_form_name').value;
+            const short_description = document.querySelector('#produit_form_short_description').value;
+            const description = document.querySelector('#produit_form_description').value;
+            const price = document.querySelector('#produit_form_price').value;
+
+            let data = {
+                name : name,
+                short_description : short_description,
+                description : description,
+                price : price
+            }
+            // Envoyer les données du formulaire à la route "modifier_produit_ajax"
+            axios({
+                method:'post',
+                data: data,
+                url: href
+            }).then(function(response) {
+                console.log('success');
+            }).catch(function (error) {
+                // Dans le cadre d'une erreur
+                window.alert('Une erreur s\'est produite, réessayez plus tard')
+            })
+        }
+        const link = document.querySelector('a.js-enregistrer');
+        link.addEventListener('click', onClickEditProduit);
+    </script>
+
 {% endblock %}
