@@ -28,7 +28,11 @@
                     <a href="{{ path('modifier_produit_ajax', {id : produit.id}) }}" class="mt-2 button is-success is-fullwidth js-enregistrer">
                         Enregistrer avec Ajax
                     </a>
+                    <div>
+                        <p class="notification is-invisible is-info p-2 mt-2 has has-text-centered" id="js-success"></p>
+                    </div>
                 {{ form_end(produitForm) }}
+
             </div>
             <div class="column"></div>
         </div>
@@ -65,7 +69,8 @@
                 data: data,
                 url: href
             }).then(function(response) {
-                console.log('success');
+                document.querySelector('#js-success').classList.toggle('is-invisible')
+                document.querySelector('#js-success').textContent = response.data.message;
             }).catch(function (error) {
                 // Dans le cadre d'une erreur
                 window.alert('Une erreur s\'est produite, réessayez plus tard')

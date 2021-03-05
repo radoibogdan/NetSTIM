@@ -62,12 +62,15 @@ class HomeController extends AbstractController
     /**
      * @Route("/{id}/edit_in_ajax", name="modifier_produit_ajax")
      * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param Produit $produit
      * @return JsonResponse
      */
     public function editInAjax(Request $request, EntityManagerInterface $manager, Produit $produit) {
         // Transformer en array les données JSON
         $data = json_decode($request->getContent(), true);
         // Récupérer les valeurs
+
         $name = $data['name'];
         $description = $data['description'];
         $short_description = $data['short_description'];
@@ -95,7 +98,7 @@ class HomeController extends AbstractController
 
         // Renvoyer la réponse JSON
         return $this->json([
-            'message' => 'Produit modifié.'
+            'message' => 'Le produit a été modifié'
         ], 200);
 
     }
