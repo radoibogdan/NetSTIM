@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class HomeController extends AbstractController
 {
@@ -66,7 +68,7 @@ class HomeController extends AbstractController
      * @param Produit $produit
      * @return JsonResponse
      */
-    public function editInAjax(Request $request, EntityManagerInterface $manager, Produit $produit) {
+    public function editInAjax(Request $request, EntityManagerInterface $manager, Produit $produit, CsrfTokenManagerInterface $csrfTokenManager) {
         // Transformer en array les données JSON
         $data = json_decode($request->getContent(), true);
         // Récupérer les valeurs
@@ -77,16 +79,17 @@ class HomeController extends AbstractController
         $price = $data['price'];
 
         // Créer le formulaire pour la validation des données récupérées
-//        $form = $this->createForm(ProduitFormType::class, $produit);
-//        $form->submit($data);
-
+        $form = $this->createForm(ProduitFormType::class, $produit);
+        $form->handleRequest($request);
+        $form->submit($data);
         // Si le formulaire n'est pas valide renvoyer une erreur
-//        if ($form->isValid() === false) {
-//            return $this->json([
-//                    'message' => 'error',
-//                ],400
-//            );
-//        }
+        if ($form->isValid() === false) {
+            return $this->json([
+                    'message' => $this->getErrorMessages($form),
+                    'data' => $data
+                ],400
+            );
+        }
 
         // Modifier le produit
         $produit->setName($name);
@@ -101,5 +104,23 @@ class HomeController extends AbstractController
             'message' => 'Le produit a été modifié'
         ], 200);
 
+    }
+
+    // Générer un array - clé => valeur avec les erreurs (la clé = nom du champ du formulaire)
+    protected function getErrorMessages(\Symfony\Component\Form\FormInterface $form)
+    {
+        $errors = array();
+
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        foreach ($form->all() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = $this->getErrorMessages($child);
+            }
+        }
+
+        return $errors;
     }
 }

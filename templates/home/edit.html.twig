@@ -56,21 +56,30 @@
             const short_description = document.querySelector('#produit_form_short_description').value;
             const description = document.querySelector('#produit_form_description').value;
             const price = document.querySelector('#produit_form_price').value;
+            const token = document.querySelector('#produit_form__token').value;
 
             let data = {
                 name : name,
                 short_description : short_description,
                 description : description,
-                price : price
+                price : price,
+                _token : token
             }
             // Envoyer les données du formulaire à la route "modifier_produit_ajax"
+            // window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
             axios({
                 method:'post',
                 data: data,
-                url: href
+                url: href,
+                headers: {'X-CSRF-TOKEN' : token}
             }).then(function(response) {
                 document.querySelector('#js-success').classList.toggle('is-invisible')
                 document.querySelector('#js-success').textContent = response.data.message;
+                setTimeout(() => {
+                    document.querySelector('#js-success').style.transition = '1s opacity';
+                    document.querySelector('#js-success').style.opacity = 0;
+                    // document.querySelector('#js-success').classList.toggle('is-invisible')
+                }, 1500)
             }).catch(function (error) {
                 // Dans le cadre d'une erreur
                 window.alert('Une erreur s\'est produite, réessayez plus tard')
