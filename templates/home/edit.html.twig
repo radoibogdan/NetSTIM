@@ -28,9 +28,6 @@
                     <a href="{{ path('modifier_produit_ajax', {id : produit.id}) }}" class="mt-2 button is-success is-fullwidth js-enregistrer">
                         Enregistrer avec Ajax
                     </a>
-                    <div>
-                        <p class="notification is-invisible is-info p-2 mt-2 has has-text-centered" id="js-success"></p>
-                    </div>
                 {{ form_end(produitForm) }}
 
             </div>
@@ -73,16 +70,43 @@
                 url: href,
                 headers: {'X-CSRF-TOKEN' : token}
             }).then(function(response) {
-                document.querySelector('#js-success').classList.toggle('is-invisible')
-                document.querySelector('#js-success').textContent = response.data.message;
+                // Créer l'élément du message avec la réponse du serveur
+                let div_success = document.createElement('div');
+                div_success.innerHTML = '<p class="notification is-info p-2 mt-2 has-text-centered" id="js-success">'+ response.data.message +'</p>';
+                let form = document.querySelector('form[name="produit_form"]');
+                form.appendChild(div_success);
                 setTimeout(() => {
                     document.querySelector('#js-success').style.transition = '1s opacity';
                     document.querySelector('#js-success').style.opacity = 0;
-                    // document.querySelector('#js-success').classList.toggle('is-invisible')
-                }, 1500)
+                }, 2000);
+                // Supprimer l'élément
+                setTimeout(() => {
+                    form.lastChild.remove();
+                }, 3500);
             }).catch(function (error) {
-                // Dans le cadre d'une erreur
-                window.alert('Une erreur s\'est produite, réessayez plus tard')
+                // Dans le cadre d'une erreur ou plusieurs
+
+                // Créer l'élément du message avec la réponse du serveur
+                let div_error = document.createElement('div');
+                // Récupérer les messages d'erreurs
+                let error_text = '';
+                let data = error.response.data.message;
+                console.log(data);
+                console.log(error.response.data);
+                for(let key in data) {
+                    error_text += data[key] + '<br>';
+                }
+                div_error.innerHTML = '<p class="notification is-info p-2 mt-2 has-text-centered" id="js-error">'+ error_text +'</p>';
+                let form = document.querySelector('form[name="produit_form"]');
+                form.appendChild(div_error);
+                setTimeout(() => {
+                    document.querySelector('#js-error').style.transition = '1s opacity';
+                    document.querySelector('#js-error').style.opacity = 0;
+                }, 2000);
+                // Supprimer l'élément
+                setTimeout(() => {
+                    form.lastChild.remove();
+                }, 4000);
             })
         }
         const link = document.querySelector('a.js-enregistrer');

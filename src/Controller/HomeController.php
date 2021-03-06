@@ -7,16 +7,16 @@ use App\Form\ProduitFormType;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class HomeController extends AbstractController
 {
     /**
+     * Lister les produits
      * @Route("/", name="liste_produits")
      * @param ProduitRepository $produitRepository
      * @return Response
@@ -33,6 +33,7 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Editer un produit
      * @Route("/{id}/edit", name="modifier_produit")
      * @param Produit $produit
      * @param EntityManagerInterface $em
@@ -62,13 +63,15 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Editer un produit, suite à une requête Ajax/Axios
      * @Route("/{id}/edit_in_ajax", name="modifier_produit_ajax")
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param Produit $produit
      * @return JsonResponse
      */
-    public function editInAjax(Request $request, EntityManagerInterface $manager, Produit $produit, CsrfTokenManagerInterface $csrfTokenManager) {
+    public function editInAjax(Request $request, EntityManagerInterface $manager, Produit $produit): JsonResponse
+    {
         // Transformer en array les données JSON
         $data = json_decode($request->getContent(), true);
         // Récupérer les valeurs
@@ -82,16 +85,16 @@ class HomeController extends AbstractController
         $form = $this->createForm(ProduitFormType::class, $produit);
         $form->handleRequest($request);
         $form->submit($data);
+
         // Si le formulaire n'est pas valide renvoyer une erreur
         if ($form->isValid() === false) {
             return $this->json([
-                    'message' => $this->getErrorMessages($form),
-                    'data' => $data
+                    'message' => $this->getErrorMessages($form)
                 ],400
             );
         }
 
-        // Modifier le produit
+        // Se le formulaire est valide on modifie le produit
         $produit->setName($name);
         $produit->setDescription($description);
         $produit->setShortDescription($short_description);
@@ -106,8 +109,12 @@ class HomeController extends AbstractController
 
     }
 
-    // Générer un array - clé => valeur avec les erreurs (la clé = nom du champ du formulaire)
-    protected function getErrorMessages(\Symfony\Component\Form\FormInterface $form)
+    /**
+     * Obtenir les erreurs suite à la validation du formulaire sous forme de tableau associatif (la clé = nom du champ du formulaire)
+     * @param FormInterface $form
+     * @return array
+     */
+    protected function getErrorMessages(FormInterface $form): array
     {
         $errors = array();
 

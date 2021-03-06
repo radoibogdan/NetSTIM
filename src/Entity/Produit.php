@@ -33,7 +33,7 @@ class Produit
     private $short_description;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true, options={"default"=0})
      */
     private $price;
 
@@ -83,7 +83,7 @@ class Produit
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(?int $price): self
     {
         $this->price = $price;
 
